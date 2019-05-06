@@ -1,39 +1,83 @@
-//
-// Created by Dima on 04.05.2019.
-//
-
-#include "MatrixTxT.h"
 #include "CMakeFiles/enum.h"
+#include "MatrixTxT.h"
 
-int MatrixTxT::getElem(int x, int y) {
-    if (x > size || x < 0 || y > 3 || y < 0) {
+/* Если закоментировать строку ниже, то появятся распечатки,
+ * которые использовались при отладке работы кода
+ * */
+#define PRINT
+
+int MatrixTxT::setElem(int x, int y, int num) {
+    /* Если x и y выходят за допустимый интервал,
+     * то возвращаем WRONG_PARAMETER
+     * */
+
+    if (x < 0 || x >= MSIZE || y < 0 || y >= MSIZE) {
         return RET_ERROR::WRONG_PARAMETER;
-    } else {
-        return M[x][y];
     }
+
+    // Иначе устанавливаем значение и возвращаем -1
+    M[x][y] = num;
+    return -1;
 }
 
 pair<int,int> MatrixTxT::Check() {
-    for (int i = 0; i < size; i++) {
+    // Чекаем все строки
+    for (int i = 0; i < MSIZE; i++) {
         if (CheckLine(i)) {
+#ifndef PRINT
+            cout << "LINE" << endl;
+            print();
+#endif //PRINT
             return {CHECKED::LINE, i};
         }
     }
-    for (int i = 0; i < size; i++) {
+
+    // Чекаем все столбцы
+    for (int i = 0; i < MSIZE; i++) {
         if (CheckColumn(i)) {
+#ifndef PRINT
+            cout << "COLUMN" << endl;
+            print();
+#endif //PRINT
             return {CHECKED::COLUMN, i};
         }
     }
+    // Чекаем главную диагональ, а потом побочную
     if (CheckMainDiag()) {
+#ifndef PRINT
+        cout << "MDIAG" << endl;
+        print();
+#endif //PRINT
         return {CHECKED::MDIAG, 0};
     } else if (CheckAddDiag()) {
+#ifndef PRINT
+        cout << "ADIAG" << endl;
+        print();
+#endif //PRINT
         return {CHECKED::ADIAG, 0};
     } else return {-1, -1};
 }
 
-bool MatrixTxT::CheckLine(int x) {
+int MatrixTxT::CheckLine(int x) {
+    /* Если x выходит за допустимый интервал,
+     * то возвращаем WRONG_PARAMETER
+     * */
+    if (x < 0 || x >= MSIZE) {
+        return RET_ERROR::WRONG_PARAMETER;
+    }
     int elem = M[x][0];
-    for (int i = 1; i < size; i++) {
+
+    /* Если первый элемент равен нулю, то
+     * проверка окончена и возвращаем false
+     * */
+    if (elem == 0) {
+        return false;
+    }
+
+    /* Cравниваем первый элемент с остальными:
+     * в случае победы должны все совпадать
+     * */
+    for (int i = 1; i < MSIZE; i++) {
         if (elem != M[x][i]) {
             return false;
         }
@@ -41,9 +85,27 @@ bool MatrixTxT::CheckLine(int x) {
     return true;
 }
 
-bool MatrixTxT::CheckColumn(int y) {
+int MatrixTxT::CheckColumn(int y) {
+    /* Если y выходит за допустимый интервал,
+     * то возвращаем WRONG_PARAMETER
+     * */
+    if (y < 0 || y >= MSIZE) {
+        return RET_ERROR::WRONG_PARAMETER;
+    }
+
     int elem = M[0][y];
-    for (int i = 1; i < size; i++) {
+
+    /* Если первый элемент равен нулю, то
+     * проверка окончена и возвращаем false
+     * */
+    if (elem == 0) {
+        return false;
+    }
+
+    /* Cравниваем первый элемент с остальными:
+     * в случае победы должны все совпадать
+     * */
+    for (int i = 1; i < MSIZE; i++) {
         if (elem != M[i][y]) {
             return false;
         }
@@ -53,7 +115,18 @@ bool MatrixTxT::CheckColumn(int y) {
 
 bool MatrixTxT::CheckMainDiag() {
     int elem = M[0][0];
-    for (int i = 1; i < size; i++) {
+
+    /* Если первый элемент равен нулю, то
+     * проверка окончена и возвращаем false
+     * */
+    if (elem == 0) {
+        return false;
+    }
+
+    /* Cравниваем первый элемент с остальными:
+     * в случае победы должны все совпадать
+     * */
+    for (int i = 1; i < MSIZE; i++) {
         if (elem != M[i][i]) {
             return false;
         }
@@ -62,11 +135,32 @@ bool MatrixTxT::CheckMainDiag() {
 }
 
 bool MatrixTxT::CheckAddDiag() {
-    int elem = M[0][size-1];
-    for (int i = 1; i < size; i++) {
-        if (elem != M[i][size-i-1]) {
+    int elem = M[0][MSIZE-1];
+
+    /* Если первый элемент равен нулю, то
+     * проверка окончена и возвращаем false
+     * */
+    if (elem == 0) {
+        return false;
+    }
+
+    /* Cравниваем первый элемент с остальными:
+     * в случае победы должны все совпадать
+     * */
+    for (int i = 1; i < MSIZE; i++) {
+        if (elem != M[i][MSIZE-i-1]) {
             return false;
         }
     }
     return true;
+}
+
+void MatrixTxT::print() {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            cout << M[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
 }

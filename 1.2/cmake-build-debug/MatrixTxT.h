@@ -1,31 +1,51 @@
-//
-// Created by Dima on 04.05.2019.
-//
-
 #ifndef INC_1_2_MATRIXTXT_H
 #define INC_1_2_MATRIXTXT_H
 
-
-#include <utility>
+#include <iostream>
 
 using std::pair;
+using std::cout;
+using std::endl;
+
+// Размер матрицы
+static const int MSIZE = 3;
 
 class MatrixTxT {
 private:
-    static const int size = 3;
 
-    bool CheckLine (int x);
-    bool CheckColumn (int y);
+    // Матрица
+    int M [MSIZE][MSIZE]{};
+
+    /* Вспомогательные функции; каждая из них чекает
+     * некоторое множество элементов матрицы на предмет
+     * совпадения всех элементов (и проверяет, что они
+     * не равны нулю)
+     * */
+    int CheckLine (int x);
+    int CheckColumn (int y);
     bool CheckMainDiag ();
     bool CheckAddDiag ();
 
 public:
-    int M [size][size]{};
 
-    int getElem (int x, int y);
+    // Setter
+    int setElem (int x, int y, int num);
 
+    /* Функция проверяет наличие столбца, строки
+     * или диагонали (главной, побочной) с
+     * одинаковыми числами, не равными нулю.
+     *
+     * Вовращаемое значение: пара (-1, -1),
+     * если не найдено, иначе: первый int
+     * отвечает за сработавший чекер (см.
+     * enum.h -> CHECKED), а второй равен
+     * номеру строки или столбца в соответсвующих
+     * случаях или нулю в остальных.
+     * */
     pair<int,int> Check ();
 
+    // Печатает матрицу
+    void print();
 };
 
 
