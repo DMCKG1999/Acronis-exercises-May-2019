@@ -8,12 +8,13 @@ using std::queue;
 using std::setw;
 
 int main(int argc, char* argv[]) {
+    // Объявляем Бор
     Tree T  = Tree();
 
+    // Инициализируем его
     for (int i = 1; i < argc; i++) {
         T.AddString(argv[i]);
     }
-    T.AddString("12");
 
     string str;
     Vertex * V = T.Root;
@@ -22,25 +23,38 @@ int main(int argc, char* argv[]) {
         bool exit = false;
         for (int i = 0; i < str.size(); i++) {
             char c = str[i];
-            if (c == EOF || c == '\n') {
+
+            // Если дошли до конца файла, то выходим
+            if (c == EOF) {
                 exit = true;
                 break;
             }
+
+            // Выводим элемент
             cout << c;
+
+            // Делаем переход по нему
             V = T.Go(V,c);
+
+            /* Если до этого не проверили вершину,
+             * то проверяем на наличие... (см.
+             * подробности в Vertex.h)
+             * */
             if (!V->SetLeaf) { T.SetLeaf(V); }
 
+            /* Если у нас есть шаблонная строка,
+             * совпадающая с суффиксом, то
+             * тогда V->Leaf = true и мы
+             * выведем * после символа
+             * */
             if (V->Leaf) {
                 cout << "*";
-            } else {
-                continue;
             }
         }
+
+        // Выходим из программы
         if (exit) { break; }
     }
 
-    T.Print();
-
-    std::cout << "Hello, World!" << std::endl;
     return 0;
 }
